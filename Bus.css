@@ -44,6 +44,8 @@
 }
 
 .go_btm {
+    width: fit-content;
     grid-row: 2;
+    margin-left: 15px;
 }
 

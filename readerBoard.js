@@ -2,7 +2,10 @@ let stops = [];
 let stopsTimes = [];
 
 let displayData = () => {
-    console.log(stopsTimes);
+    let nextDepartureContainer = document.getElementById("nextDeparture");
+    for (let nextStop of stopsTimes) {
+        
+    }
 };
 
 let updateDate = () => {
@@ -26,20 +29,12 @@ let updateDate = () => {
                 for (let route of json.data.entry.stopRouteSchedules) {
                     for (let schedules of route.stopRouteDirectionSchedules) {
                         for (let time of schedules.scheduleStopTimes) {
-                            let data = {
-                                time: time,
-                                info: {
-                                    id: json.data.references.stops[0].id,
-                                    name: json.data.references.stops[0].name,
-                                    route: json.data.references.routes[0].shortName,
-                                }
-                            };
                             stopsTimes[stop.id].times.push(time)
                         }
                     }
                 }
                 stopsTimes[stop.id].times.sort((a, b) => {
-                    console.log(new Date(a.departureTime));
+                    //console.log(new Date(a.departureTime));
                     return a.departureTime - b.departureTime
                 });
             });
@@ -52,6 +47,8 @@ let start = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const stopsParam = urlParams.get('data');
     stops = stopsParam.split(",");
+    const primaryColor = urlParams.get('primary');
+    const secondaryColor = urlParams.get('secondary');
     updateDate();
     window.setInterval(updateDate, 60000)
 };
