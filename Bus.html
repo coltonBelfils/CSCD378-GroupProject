@@ -7,15 +7,29 @@
     <script src="busStops.js"></script>
 </head>
 <body>
-<div id="instructions"> Enter the Stop ID:</div>
-<div>
-    <input type="text" id="stop_id">
+<div class="startContainer">
+    <div class="startContainer stopsInput">
+        <label class="instructions stopPrompt"> Enter each Stop ID one at a time:</label>
+        <input type="text" id="stop_id" class="stopInput">
+        <input type="button" id="myBtn" value="Enter" class="stopConfirm" onclick="addStop()"/>
+    </div>
 
-    <input type="button" id="myBtn" value="Enter" onclick="addStop()"/>
+    <div class="startContainer theming">
+        <label class="instructions">Choose a Theme:</label>
+        <div class="colorPrompt">
+            <label>Primary color:</label>
+            <input id="primary_color" type="color">
+        </div>
+        <div class="colorPrompt">
+            <label>Secondary color:</label>
+            <input id="secondary_color" type="color">
+        </div>
+    </div>
 
-    <div id="instructions">Hit GO to see routes on your stop</div>
-
-    <input type="button" value="GO" onclick="loadBoard()">
+    <div class="startContainer goPromptContainer">
+        <div class="instructions goPrompt">Hit GO to see routes on your stop</div>
+        <input class="go_btm" type="button" value="GO" onclick="loadBoard()">
+    </div>
 </div>
 
 </body>
