@@ -1,12 +1,11 @@
 let stops = [];
-let times = [];
+let stopsTimes = [];
 
 let displayData = () => {
-    console.log(times);
+    console.log(stopsTimes);
 };
 
 let updateDate = () => {
-    times = [];
     for (let stop of stops) {
         let url = "https://cors-anywhere.herokuapp.com/52.88.188.196:8080/api/api/where/schedule-for-stop/" + stop + ".json?key=TEST";
         fetch(url, {
@@ -16,37 +15,45 @@ let updateDate = () => {
             }
         }).then((response) => {
             response.json().then((json) => {
+                let stop = {
+                    id: json.data.references.stops[0].id,
+                    name: json.data.references.stops[0].name,
+                    route: json.data.references.routes[0].shortName,
+                    times: []
+                };
+                stopsTimes[stop.id] = stop;
+
                 for (let route of json.data.entry.stopRouteSchedules) {
                     for (let schedules of route.stopRouteDirectionSchedules) {
                         for (let time of schedules.scheduleStopTimes) {
-                            times.push(time)
+                            let data = {
+                                time: time,
+                                info: {
+                                    id: json.data.references.stops[0].id,
+                                    name: json.data.references.stops[0].name,
+                                    route: json.data.references.routes[0].shortName,
+                                }
+                            };
+                            stopsTimes[stop.id].times.push(time)
                         }
                     }
                 }
-            })
+                stopsTimes[stop.id].times.sort((a, b) => {
+                    console.log(new Date(a.departureTime));
+                    return a.departureTime - b.departureTime
+                });
+            });
+            displayData()
         })
     }
-
-    times.sort((a, b) => {
-        return a.departureTime - b.departureTime
-    });
-
-    displayData()
 };
 
 let start = () => {
-    /*console.log("start of start");
-    let str = JSON.stringify(["STA_COW9THNN"]);
-    console.log(str);
     const urlParams = new URLSearchParams(window.location.search);
-    const stopsParam = urlParams.get('stops');
-    console.log(stopsParam);
-    JSON.parse(stopsParam, (json) => {
-       stops = json
-    });*/
-    stops = ["STA_COW9THNN", "STA_AIRFLIWF"];
-
-    window.setInterval(updateDate, 5000)
+    const stopsParam = urlParams.get('data');
+    stops = stopsParam.split(",");
+    updateDate();
+    window.setInterval(updateDate, 60000)
 };
 
 document.addEventListener("DOMContentLoaded", function () {

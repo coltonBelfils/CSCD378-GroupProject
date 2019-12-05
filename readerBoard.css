@@ -50,3 +50,8 @@
 .futureDeparturesContainer {
 
 }
+
+.futureDeparturesTable {
+    margin-top: 30px;
+    border: black 1px solid;
+}

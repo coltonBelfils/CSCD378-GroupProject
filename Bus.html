@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> STA BUS ROUTES </title>
+    <link rel="stylesheet" type="text/css" href="Bus.css">
+    <script src="busStops.js"></script>
+</head>
+<body>
+<div id="instructions"> Enter the Stop ID:</div>
+<div>
+    <input type="text" id="stop_id">
+
+    <input type="button" id="myBtn" value="Enter" onclick="addStop()"/>
+
+    <div id="instructions">Hit GO to see routes on your stop</div>
+
+    <input type="button" value="GO" onclick="loadBoard()">
+</div>
+
+</body>
+</html>
