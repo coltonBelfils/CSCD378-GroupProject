@@ -9,24 +9,39 @@ let displayData = () => {
     }
     stops.forEach((stopId) => {
         let nextStop = stopsTimes[stopId];
-        let nextContainer = document.createElement("div");
-        nextContainer.setAttribute("class", "container nextDepartureItem");
+        if(nextStop != null) nextStop.routes.forEach(route => {
+            let nextContainer = document.createElement("div");
+            nextContainer.setAttribute("class", "container nextDepartureItem");
 
-        let stopName = document.createElement("label");
-        stopName.setAttribute("class", "stopName");
-        stopName.innerText = nextStop.name;
+            let stopName = document.createElement("label");
+            stopName.setAttribute("class", "stopName");
+            stopName.innerText = nextStop.name;
 
-        let bigTime = document.createElement("label");
-        bigTime.setAttribute("class", "bigTime");
-        bigTime.innerText = new Date(nextStop.times[0].departureTime).getTime().toString();
+            let routeName = document.createElement("label");
+            routeName.setAttribute("class", "routeName");
+            routeName.innerText = route.name;
 
-        let testTime = new Date(nextStop.times[0].departureTime);
-        console.log(testTime.getTime());
-        console.log(testTime);
+            let bigTime = document.createElement("label");
+            bigTime.setAttribute("class", "bigTime");
+            let hours = new Date(route.times[0].departureTime).getHours();
+            let minutes = new Date(route.times[0].departureTime).getMinutes();
+            let ampm;
+            if (hours >= 12) {
+                ampm = "pm"
+            } else {
+                ampm = "am"
+            }
+            hours = hours % 12;
+            if (minutes < 10) {
+                minutes = "0" + minutes
+            }
+            bigTime.innerText = hours + ":" + minutes + " " + ampm;
 
-        nextContainer.appendChild(stopName);
-        nextContainer.appendChild(bigTime);
-        nextDepartureContainer.appendChild(nextContainer);
+            nextContainer.appendChild(stopName);
+            nextContainer.appendChild(routeName);
+            nextContainer.appendChild(bigTime);
+            nextDepartureContainer.appendChild(nextContainer);
+        });
     });
 };
 
@@ -43,22 +58,35 @@ let updateDate = () => {
                 let stop = {
                     id: json.data.references.stops[0].id,
                     name: json.data.references.stops[0].name,
-                    route: json.data.references.routes[0].shortName,
-                    times: []
+                    routes: []
                 };
                 stopsTimes[stop.id] = stop;
 
                 for (let route of json.data.entry.stopRouteSchedules) {
-                    for (let schedules of route.stopRouteDirectionSchedules) {
-                        for (let time of schedules.scheduleStopTimes) {
-                            stopsTimes[stop.id].times.push(time)
+                    let routeName = "";
+                    for (let refRoute of json.data.references.routes) {
+                        if (refRoute.id === route.routeId) {
+                            routeName = refRoute.longName + " - " + refRoute.shortName;
                         }
                     }
+                    let currentRoute = {
+                        id: route.routeId,
+                        name: routeName,
+                        times: []
+                    };
+                    for (let schedules of route.stopRouteDirectionSchedules) {
+                        let currentDate = new Date().getTime();
+                        for (let time of schedules.scheduleStopTimes) {
+                            if (time.departureTime >= currentDate) {
+                                currentRoute.times.push(time)
+                            }
+                        }
+                    }
+                    currentRoute.times.sort((a, b) => {
+                        return a.departureTime - b.departureTime
+                    });
+                    stopsTimes[stop.id].routes.push(currentRoute);
                 }
-                stopsTimes[stop.id].times.sort((a, b) => {
-                    //console.log(new Date(a.departureTime));
-                    return a.departureTime - b.departureTime
-                });
                 displayData()
             });
         })

@@ -45,6 +45,11 @@
     font-size: 2em;
 }
 
+.routeName {
+    justify-self: center;
+    font-size: 1.7em;
+}
+
 .bigTime {
     justify-self: center;
     font-size: 5em;
