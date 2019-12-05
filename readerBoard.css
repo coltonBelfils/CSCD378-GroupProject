@@ -21,7 +21,6 @@
 }
 
 .nextDepartureContainer {
-    grid-template-columns: 1fr 1fr 1fr;
     border-top: black 1px solid;
     padding-top: 20px;
 }
@@ -31,6 +30,10 @@
     padding-bottom: 10px;
     justify-self: center;
     align-self: center;
+}
+
+.nextDepartureItems {
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .nextDepartureItem {

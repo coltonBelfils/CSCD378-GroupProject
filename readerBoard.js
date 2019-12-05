@@ -2,10 +2,32 @@ let stops = [];
 let stopsTimes = [];
 
 let displayData = () => {
+    console.log(stopsTimes);
     let nextDepartureContainer = document.getElementById("nextDeparture");
-    for (let nextStop of stopsTimes) {
-        
+    while (nextDepartureContainer.firstChild) {
+        nextDepartureContainer.removeChild(nextDepartureContainer.firstChild);
     }
+    stops.forEach((stopId) => {
+        let nextStop = stopsTimes[stopId];
+        let nextContainer = document.createElement("div");
+        nextContainer.setAttribute("class", "container nextDepartureItem");
+
+        let stopName = document.createElement("label");
+        stopName.setAttribute("class", "stopName");
+        stopName.innerText = nextStop.name;
+
+        let bigTime = document.createElement("label");
+        bigTime.setAttribute("class", "bigTime");
+        bigTime.innerText = new Date(nextStop.times[0].departureTime).getTime().toString();
+
+        let testTime = new Date(nextStop.times[0].departureTime);
+        console.log(testTime.getTime());
+        console.log(testTime);
+
+        nextContainer.appendChild(stopName);
+        nextContainer.appendChild(bigTime);
+        nextDepartureContainer.appendChild(nextContainer);
+    });
 };
 
 let updateDate = () => {
@@ -37,8 +59,8 @@ let updateDate = () => {
                     //console.log(new Date(a.departureTime));
                     return a.departureTime - b.departureTime
                 });
+                displayData()
             });
-            displayData()
         })
     }
 };
