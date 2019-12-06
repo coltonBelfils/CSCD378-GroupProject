@@ -23,19 +23,7 @@ let displayData = () => {
 
             let bigTime = document.createElement("label");
             bigTime.setAttribute("class", "bigTime");
-            let hours = new Date(route.times[0].departureTime).getHours();
-            let minutes = new Date(route.times[0].departureTime).getMinutes();
-            let ampm;
-            if (hours >= 12) {
-                ampm = "pm"
-            } else {
-                ampm = "am"
-            }
-            hours = hours % 12;
-            if (minutes < 10) {
-                minutes = "0" + minutes
-            }
-            bigTime.innerText = hours + ":" + minutes + " " + ampm;
+            bigTime.innerText = formatTime(route.times[0].departureTime);
 
             nextContainer.appendChild(stopName);
             nextContainer.appendChild(routeName);
@@ -43,6 +31,22 @@ let displayData = () => {
             nextDepartureContainer.appendChild(nextContainer);
         });
     });
+};
+
+let formatTime = (milliTime) => {
+    let hours = new Date(milliTime).getHours();
+    let minutes = new Date(milliTime).getMinutes();
+    let ampm;
+    if (hours >= 12) {
+        ampm = "pm"
+    } else {
+        ampm = "am"
+    }
+    hours = hours % 12;
+    if (minutes < 10) {
+        minutes = "0" + minutes
+    }
+    return hours + ":" + minutes + " " + ampm;
 };
 
 let updateDate = () => {
@@ -93,6 +97,10 @@ let updateDate = () => {
     }
 };
 
+let getTime = () => {
+    document.getElementById("currentTime").innerText = formatTime(new Date().getTime());
+};
+
 let start = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const stopsParam = urlParams.get('data');
@@ -100,7 +108,9 @@ let start = () => {
     const primaryColor = urlParams.get('primary');
     const secondaryColor = urlParams.get('secondary');
     updateDate();
-    window.setInterval(updateDate, 60000)
+    getTime();
+    window.setInterval(updateDate, 60000);
+    window.setInterval(getTime, 4000);
 };
 
 document.addEventListener("DOMContentLoaded", function () {

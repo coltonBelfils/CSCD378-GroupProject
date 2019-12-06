@@ -11,10 +11,18 @@
 
 .titleBarContainer {
     height: 4em;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 5fr 1fr;
 }
 
 .title {
+    grid-column: 2;
+    justify-self: center;
+    align-self: center;
+    font-size: 3em;
+}
+
+.titleTime {
+    grid-column: 3;
     justify-self: center;
     align-self: center;
     font-size: 3em;
