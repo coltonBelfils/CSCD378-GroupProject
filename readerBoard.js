@@ -1,5 +1,7 @@
 let stops = [];
 let stopsTimes = [];
+let primaryColor;
+let secondaryColor;
 
 let displayData = () => {
     console.log(stopsTimes);
@@ -10,25 +12,30 @@ let displayData = () => {
     stops.forEach((stopId) => {
         let nextStop = stopsTimes[stopId];
         if(nextStop != null) nextStop.routes.forEach(route => {
-            let nextContainer = document.createElement("div");
-            nextContainer.setAttribute("class", "container nextDepartureItem");
+            if(route.times.length !== 0) {
+                let nextContainer = document.createElement("div");
+                nextContainer.setAttribute("class", "container nextDepartureItem");
+                if (route.times[0].departureTime - new Date().getTime() < 120000) {
+                    nextContainer.classList.add("departureAlert")
+                }
 
-            let stopName = document.createElement("label");
-            stopName.setAttribute("class", "stopName");
-            stopName.innerText = nextStop.name;
+                let stopName = document.createElement("label");
+                stopName.setAttribute("class", "stopName");
+                stopName.innerText = nextStop.name;
 
-            let routeName = document.createElement("label");
-            routeName.setAttribute("class", "routeName");
-            routeName.innerText = route.name;
+                let routeName = document.createElement("label");
+                routeName.setAttribute("class", "routeName");
+                routeName.innerText = route.name;
 
-            let bigTime = document.createElement("label");
-            bigTime.setAttribute("class", "bigTime");
-            bigTime.innerText = formatTime(route.times[0].departureTime);
+                let bigTime = document.createElement("label");
+                bigTime.setAttribute("class", "bigTime");
+                bigTime.innerText = formatTime(route.times[0].departureTime);
 
-            nextContainer.appendChild(stopName);
-            nextContainer.appendChild(routeName);
-            nextContainer.appendChild(bigTime);
-            nextDepartureContainer.appendChild(nextContainer);
+                nextContainer.appendChild(stopName);
+                nextContainer.appendChild(routeName);
+                nextContainer.appendChild(bigTime);
+                nextDepartureContainer.appendChild(nextContainer);
+            }
         });
     });
 };
@@ -68,14 +75,17 @@ let updateDate = () => {
 
                 for (let route of json.data.entry.stopRouteSchedules) {
                     let routeName = "";
+                    let routeNumber = "";
                     for (let refRoute of json.data.references.routes) {
                         if (refRoute.id === route.routeId) {
                             routeName = refRoute.longName + " - " + refRoute.shortName;
+                            routeNumber = refRoute.shortName;
                         }
                     }
                     let currentRoute = {
                         id: route.routeId,
                         name: routeName,
+                        number: routeNumber,
                         times: []
                     };
                     for (let schedules of route.stopRouteDirectionSchedules) {
@@ -105,8 +115,9 @@ let start = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const stopsParam = urlParams.get('data');
     stops = stopsParam.split(",");
-    const primaryColor = urlParams.get('primary');
-    const secondaryColor = urlParams.get('secondary');
+    primaryColor = urlParams.get('primary');
+    secondaryColor = urlParams.get('secondary');
+    document.getElementById("tableHeader").style.background = primaryColor;
     updateDate();
     getTime();
     window.setInterval(updateDate, 60000);

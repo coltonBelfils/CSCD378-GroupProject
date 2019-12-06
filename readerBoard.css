@@ -33,6 +33,22 @@
     padding-top: 20px;
 }
 
+.departureAlert {
+    animation: departureAlertAnimation 4000ms infinite;
+}
+
+@keyframes departureAlertAnimation {
+    0% {
+        background: #ffffff;
+    }
+    50% {
+        background: #ff7e72;
+    }
+    100% {
+        background: #ffffff;
+    }
+}
+
 .nextDepartureTitle {
     grid-column: 1 / -1;
     padding-bottom: 10px;
