@@ -15,8 +15,12 @@ let loadBoard = () => {
     let primary = document.getElementById("primary_color");
     let secondary = document.getElementById("secondary_color");
 
-    let stopsQueryString = new URLSearchParams(queryStringData);
-    window.location.href = "readerBoard.html?" + stopsQueryString + "&primary=" + primary.value + "&secondary=" + secondary.value;
+    if(queryStringData.data.length !== 0) {
+        let stopsQueryString = new URLSearchParams(queryStringData);
+        window.location.href = "readerBoard.html?" + stopsQueryString + "&primary=" + primary.value.toString().substring(1) + "&secondary=" + secondary.value.toString().substring(1);
+    } else {
+        alert("Please enter at least one stop first");
+    }
 };
 
 let start = () => {

@@ -4,15 +4,23 @@ let primaryColor;
 let secondaryColor;
 
 let displayData = () => {
-    console.log(stopsTimes);
     let nextDepartureContainer = document.getElementById("nextDeparture");
     while (nextDepartureContainer.firstChild) {
         nextDepartureContainer.removeChild(nextDepartureContainer.firstChild);
     }
+
+    var tab = document.getElementById("tab");
+
+    while (tab.firstChild) {
+        tab.removeChild(tab.firstChild);
+    }
+
+    rowAdd(tab, "ROUTE", "ARRIVAL TIME", "DEPARTURE TIME").style.background=primaryColor;
+
     stops.forEach((stopId) => {
         let nextStop = stopsTimes[stopId];
-        if(nextStop != null) nextStop.routes.forEach(route => {
-            if(route.times.length !== 0) {
+        if (nextStop != null) nextStop.routes.forEach(route => {
+            if (route.times.length !== 0) {
                 let nextContainer = document.createElement("div");
                 nextContainer.setAttribute("class", "container nextDepartureItem");
                 if (route.times[0].departureTime - new Date().getTime() < 120000) {
@@ -35,6 +43,12 @@ let displayData = () => {
                 nextContainer.appendChild(routeName);
                 nextContainer.appendChild(bigTime);
                 nextDepartureContainer.appendChild(nextContainer);
+
+                var tbl = document.getElementById("tab");
+
+                for (var i = 0; i < 6 && i < route.times.length; i++) {
+                    rowAdd(tbl, route.name, formatTime(route.times[i].arrivalTime), formatTime(route.times[i].departureTime));
+                }
             }
         });
     });
@@ -115,14 +129,36 @@ let start = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const stopsParam = urlParams.get('data');
     stops = stopsParam.split(",");
-    primaryColor = urlParams.get('primary');
-    secondaryColor = urlParams.get('secondary');
-    document.getElementById("tableHeader").style.background = primaryColor;
+    primaryColor = "#" + urlParams.get('primary');
+    secondaryColor = "#" + urlParams.get('secondary');
     updateDate();
     getTime();
     window.setInterval(updateDate, 60000);
     window.setInterval(getTime, 4000);
+
+    document.getElementById("titleBar").style.background = primaryColor;
+    document.getElementById("nextDepartureContainer").style.background = secondaryColor;
+
+    //title.style.background=primaryColor;
 };
+
+function cellAdd(tr, val) {
+    var td = document.createElement('td');
+
+    td.innerHTML = val;
+
+    tr.appendChild(td);
+}
+
+function rowAdd(tab, val_1, val_2, val_3) {
+    var tr = document.createElement('tr');
+
+    cellAdd(tr, val_1);
+    cellAdd(tr, val_2);
+    cellAdd(tr, val_3);
+    tab.appendChild(tr);
+    return tr;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     start()

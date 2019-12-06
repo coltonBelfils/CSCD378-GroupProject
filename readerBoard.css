@@ -87,3 +87,7 @@
     margin-top: 30px;
     border: black 1px solid;
 }
+
+tr:nth-child(even) {
+    background-color: lightgray;
+}
